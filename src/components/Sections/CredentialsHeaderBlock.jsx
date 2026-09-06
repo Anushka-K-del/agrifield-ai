@@ -46,7 +46,7 @@ export default function CredentialsHeaderBlock() {
                     Sponsoring Organization
                   </span>
                   <strong className="text-xs font-extrabold text-white block">
-                    Government of Maharashtra
+                    AgriTech Innovations
                   </strong>
                   <span className="text-[10px] text-[#B9FBC0]">Theme: Agriculture & Rural Dev</span>
                 </div>

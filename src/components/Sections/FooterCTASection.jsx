@@ -60,7 +60,7 @@ export default function FooterCTASection() {
             <p><strong className="text-white">Problem Statement:</strong> Early detection and management of crop diseases and pest infestations</p>
             <p><strong className="text-white">Track:</strong> Software Track Only (Zero Mandatory Hardware Dependency)</p>
             <p><strong className="text-white">Theme:</strong> Agriculture, FoodTech & Rural Development</p>
-            <p><strong className="text-white">Sponsoring Organization:</strong> Government of Maharashtra</p>
+            <p><strong className="text-white">Sponsoring Organization:</strong> AgriTech Innovations</p>
             <div className="pt-2 border-t border-[#40916C]/20 flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#74C69D]">
               <span><strong>Team:</strong> Team AgriShield Innovators</span>
               <span><strong>Deployment:</strong> Vercel Global Edge CDN</span>
