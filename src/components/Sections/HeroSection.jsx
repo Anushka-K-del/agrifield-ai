@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Sparkles, ChevronDown, Activity, ArrowRight, FolderKanban } from 'lucide-react';
+import { Shield, Sparkles, Activity, ArrowRight } from 'lucide-react';
 
 export default function HeroSection({ onExplore }) {
   return (
@@ -32,17 +32,6 @@ export default function HeroSection({ onExplore }) {
           >
             <span>Explore 3D Ecosystem</span>
             <ArrowRight className="w-4 h-4" />
-          </button>
-
-          <button
-            onClick={() => {
-              const el = document.getElementById('file-manager');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-            }}
-            className="flex items-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm bg-[#1B4332] text-[#B9FBC0] border border-[#B9FBC0]/40 hover:bg-[#2D6A4F] hover:text-white transition-all cursor-pointer shadow-lg"
-          >
-            <FolderKanban className="w-4 h-4 text-[#B9FBC0]" />
-            <span>Open File Manager</span>
           </button>
 
           <a

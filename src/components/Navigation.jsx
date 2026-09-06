@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Sprout, Cpu, Layers, Award, ArrowUpRight, FolderKanban } from 'lucide-react';
+import { Shield, Sprout, Cpu, Layers, Award, ArrowUpRight } from 'lucide-react';
 import ReducedMotionToggle from './ReducedMotionToggle';
 
 export default function Navigation({ reducedMotion, setReducedMotion, activeSection }) {
@@ -16,7 +16,6 @@ export default function Navigation({ reducedMotion, setReducedMotion, activeSect
   const navLinks = [
     { id: 'problem', label: 'Problem', icon: Sprout },
     { id: 'solution', label: 'Solution', icon: Shield },
-    { id: 'file-manager', label: 'File Manager', icon: FolderKanban },
     { id: 'pillars', label: 'Pillars', icon: Cpu },
     { id: 'tech', label: 'Stack', icon: Layers },
     { id: 'impact', label: 'Impact', icon: Award },

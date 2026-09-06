@@ -10,7 +10,6 @@ import CanvasContainer from './components/CanvasContainer';
 import HeroSection from './components/Sections/HeroSection';
 import ProblemSection from './components/Sections/ProblemSection';
 import SolutionSection from './components/Sections/SolutionSection';
-import FileManagerSection from './components/Sections/FileManagerSection';
 import SystemPillarsSection from './components/Sections/SystemPillarsSection';
 import TechStackSection from './components/Sections/TechStackSection';
 import ImpactSection from './components/Sections/ImpactSection';
@@ -48,8 +47,8 @@ export default function App() {
         const p = Math.max(0, Math.min(1, window.scrollY / totalScroll));
         setScrollProgress(p);
 
-        // Mapped 8 sections (0 to 7)
-        const currentSec = Math.min(7, Math.floor(p * 8));
+        // Mapped 7 sections (0 to 6)
+        const currentSec = Math.min(6, Math.floor(p * 7));
         setActiveSection(currentSec);
       }
     });
@@ -66,7 +65,7 @@ export default function App() {
   }, [loading]);
 
   // Section IDs array for active section highlighting
-  const sectionIds = ['hero', 'problem', 'solution', 'file-manager', 'pillars', 'tech', 'impact', 'cta'];
+  const sectionIds = ['hero', 'problem', 'solution', 'pillars', 'tech', 'impact', 'cta'];
 
   return (
     <div ref={containerRef} className="relative min-h-screen bg-[#081C15] text-[#D8F3DC] overflow-x-hidden selection:bg-[#40916C] selection:text-white">
@@ -95,7 +94,6 @@ export default function App() {
         }} />
         <ProblemSection />
         <SolutionSection />
-        <FileManagerSection />
         <SystemPillarsSection />
         <TechStackSection />
         <ImpactSection />

@@ -1,5 +1,0 @@
-Timestamp,Zone,Pathogen_Detected,Severity,Action_Required,Status
-2026-09-02 08:15,Zone A1,Corn Common Rust,Mild (8%),Apply Neem Spray,Resolved
-2026-09-02 09:40,Zone B4,Northern Corn Leaf Blight,Moderate (14%),Targeted Copper Hydroxide,In Progress
-2026-09-02 11:20,Zone C2,None (Healthy),0%,Continue Regular Audit,Normal
-2026-09-02 14:05,Zone D1,Fall Armyworm Early Stage,Low (4%),Deploy Bio-Pheromone Traps,Active

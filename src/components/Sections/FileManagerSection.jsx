@@ -22,12 +22,14 @@ import {
   ArrowDownToLine,
   FolderOpen,
   Copy,
-  Check
+  Check,
+  Edit3,
+  Save
 } from 'lucide-react';
 
-const DOWNLOAD_FOLDER_PATH = "C:\\Users\\MR SALUER\\Downloads\\Agrifield-Files";
+const DEFAULT_FOLDER_PATH = "C:\\Users\\MR SALUER\\Downloads\\Agrifield-Files";
 
-const INITIAL_FILES = [
+const INITIAL_FILES = (folderPath) => [
   {
     id: 'file-1',
     name: 'SOIL_HEALTH_SECTOR_4.json',
@@ -38,7 +40,7 @@ const INITIAL_FILES = [
     size: '14.2 KB',
     date: '2026-09-03',
     confidence: '98.5%',
-    filePath: `${DOWNLOAD_FOLDER_PATH}\\SOIL_HEALTH_SECTOR_4.json`,
+    filePath: `${folderPath}\\SOIL_HEALTH_SECTOR_4.json`,
     content: JSON.stringify({
       reportTitle: "Soil Health & Micro-Nutrient Analysis",
       generatedAt: "2026-09-03T10:30:00Z",
@@ -69,7 +71,7 @@ const INITIAL_FILES = [
     size: '28.6 KB',
     date: '2026-09-02',
     confidence: '96.2%',
-    filePath: `${DOWNLOAD_FOLDER_PATH}\\CROP_DIAGNOSTICS_SEPT2026.csv`,
+    filePath: `${folderPath}\\CROP_DIAGNOSTICS_SEPT2026.csv`,
     content: `Timestamp,Zone,Pathogen_Detected,Severity,Action_Required,Status
 2026-09-02 08:15,Zone A1,Corn Common Rust,Mild (8%),Apply Neem Spray,Resolved
 2026-09-02 09:40,Zone B4,Northern Corn Leaf Blight,Moderate (14%),Targeted Copper Hydroxide,In Progress
@@ -86,7 +88,7 @@ const INITIAL_FILES = [
     size: '8.4 KB',
     date: '2026-09-01',
     confidence: '99.1%',
-    filePath: `${DOWNLOAD_FOLDER_PATH}\\SMART_IRRIGATION_SCHEDULE.json`,
+    filePath: `${folderPath}\\SMART_IRRIGATION_SCHEDULE.json`,
     content: JSON.stringify({
       scheduleName: "AI Adaptive Drip Irrigation Matrix",
       weatherSync: "Integrated with Real-Time Rain Sensor",
@@ -108,7 +110,7 @@ const INITIAL_FILES = [
     size: '45.1 KB',
     date: '2026-08-30',
     confidence: '97.8%',
-    filePath: `${DOWNLOAD_FOLDER_PATH}\\DRONE_THERMAL_SCAN_OCT2026.csv`,
+    filePath: `${folderPath}\\DRONE_THERMAL_SCAN_OCT2026.csv`,
     content: `Grid_X,Grid_Y,NDVI_Index,Surface_Temp_C,Canopy_Stress_Score
 12.4,45.8,0.84,24.2,Low
 12.5,45.8,0.81,24.5,Low
@@ -125,7 +127,7 @@ const INITIAL_FILES = [
     size: '12.0 KB',
     date: '2026-08-28',
     confidence: '99.4%',
-    filePath: `${DOWNLOAD_FOLDER_PATH}\\AI_FARM_ACTION_PLAN.txt`,
+    filePath: `${folderPath}\\AI_FARM_ACTION_PLAN.txt`,
     content: `# AGRIFIELD.AI - 7-DAY CROP MASTER ACTION PLAN
 
 ## Executive Summary
@@ -142,18 +144,25 @@ Field Scan completed on South Ridge - Field 8 for Cotton Crop. Overall ecosystem
 ];
 
 export default function FileManagerSection() {
+  const [folderPath, setFolderPath] = useState(() => {
+    return localStorage.getItem('agrifield_folder_path') || DEFAULT_FOLDER_PATH;
+  });
+  const [isEditingPath, setIsEditingPath] = useState(false);
+  const [tempPath, setTempPath] = useState(folderPath);
+
   const [files, setFiles] = useState(() => {
     const saved = localStorage.getItem('agrifield_files');
+    const curPath = localStorage.getItem('agrifield_folder_path') || DEFAULT_FOLDER_PATH;
     if (saved) {
       try { 
         const parsed = JSON.parse(saved); 
         return parsed.map(f => ({
           ...f,
-          filePath: f.filePath || `${DOWNLOAD_FOLDER_PATH}\\${f.name}`
+          filePath: f.filePath || `${curPath}\\${f.name}`
         }));
-      } catch (e) { return INITIAL_FILES; }
+      } catch (e) { return INITIAL_FILES(curPath); }
     }
-    return INITIAL_FILES;
+    return INITIAL_FILES(curPath);
   });
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -172,7 +181,16 @@ export default function FileManagerSection() {
   const [genProgress, setGenProgress] = useState(0);
   const [genStep, setGenStep] = useState('');
 
-  // Save to local storage on files update
+  // Save folder path & sync file paths
+  useEffect(() => {
+    localStorage.setItem('agrifield_folder_path', folderPath);
+    setFiles(prev => prev.map(f => ({
+      ...f,
+      filePath: `${folderPath}\\${f.name}`
+    })));
+  }, [folderPath]);
+
+  // Save files to local storage
   useEffect(() => {
     localStorage.setItem('agrifield_files', JSON.stringify(files));
   }, [files]);
@@ -181,6 +199,16 @@ export default function FileManagerSection() {
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(''), 4000);
+  };
+
+  // Save Path Handler
+  const handleSavePath = () => {
+    const cleanPath = tempPath.trim();
+    if (cleanPath) {
+      setFolderPath(cleanPath);
+      setIsEditingPath(false);
+      showToast(`Updated File Manager Storage Location to: ${cleanPath}`);
+    }
   };
 
   // Copy path helper
@@ -233,7 +261,7 @@ export default function FileManagerSection() {
       const sanitizedCrop = genCrop.toUpperCase();
 
       let filename = `${genCategory.replace(/\s+/g, '_').toUpperCase()}_${sanitizedCrop}_${sanitizedField}.${genFormat}`;
-      let fullPath = `${DOWNLOAD_FOLDER_PATH}\\${filename}`;
+      let fullPath = `${folderPath}\\${filename}`;
       
       let generatedContent = '';
       if (genFormat === 'json') {
@@ -327,12 +355,12 @@ export default function FileManagerSection() {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    showToast(`Saved "${fileObj.name}" to Downloads\\Agrifield-Files\\`);
+    showToast(`Saved "${fileObj.name}" to ${folderPath}`);
   };
 
   // Reset to default sample files
   const handleResetDefaults = () => {
-    setFiles(INITIAL_FILES);
+    setFiles(INITIAL_FILES(folderPath));
     showToast('Reset File Manager to default AgriField sample files.');
   };
 
@@ -387,27 +415,64 @@ export default function FileManagerSection() {
           </div>
         </div>
 
-        {/* Global File Storage Banner */}
-        <div className="glass-panel p-4 rounded-2xl border border-[#B9FBC0]/30 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-gradient-to-r from-[#1B4332]/80 to-[#081C15]/90">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#081C15] border border-[#B9FBC0]/40 flex items-center justify-center text-[#B9FBC0]">
+        {/* Dynamic File Storage Location Banner */}
+        <div className="glass-panel p-4 rounded-2xl border border-[#B9FBC0]/30 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-gradient-to-r from-[#1B4332]/80 to-[#081C15]/90">
+          <div className="flex items-center gap-3 flex-1 overflow-hidden w-full">
+            <div className="w-9 h-9 rounded-xl bg-[#081C15] border border-[#B9FBC0]/40 flex items-center justify-center text-[#B9FBC0] shrink-0">
               <FolderOpen className="w-5 h-5" />
             </div>
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#74C69D]">Windows File Explorer Location</span>
-              <p className="text-xs sm:text-sm font-mono text-[#B9FBC0] font-bold select-all break-all">
-                {DOWNLOAD_FOLDER_PATH}
-              </p>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#74C69D]">File Manager Location Path</span>
+                {!isEditingPath && (
+                  <button
+                    onClick={() => { setTempPath(folderPath); setIsEditingPath(true); }}
+                    className="text-[10px] text-[#B9FBC0] hover:underline inline-flex items-center gap-1 cursor-pointer font-bold"
+                  >
+                    <Edit3 className="w-3 h-3" /> Change Path
+                  </button>
+                )}
+              </div>
+
+              {isEditingPath ? (
+                <div className="flex items-center gap-2 mt-1 w-full">
+                  <input
+                    type="text"
+                    value={tempPath}
+                    onChange={(e) => setTempPath(e.target.value)}
+                    className="flex-1 bg-[#081C15] border border-[#B9FBC0] rounded-lg px-3 py-1 text-xs font-mono text-[#B9FBC0] focus:outline-none"
+                    placeholder="Enter file manager directory path..."
+                  />
+                  <button
+                    onClick={handleSavePath}
+                    className="px-3 py-1 bg-[#40916C] hover:bg-[#52B788] text-white rounded-lg text-xs font-bold inline-flex items-center gap-1 cursor-pointer"
+                  >
+                    <Save className="w-3.5 h-3.5" /> Save
+                  </button>
+                  <button
+                    onClick={() => setIsEditingPath(false)}
+                    className="px-2 py-1 text-xs text-[#74C69D] hover:text-white cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <p className="text-xs sm:text-sm font-mono text-[#B9FBC0] font-bold select-all truncate" title={folderPath}>
+                  {folderPath}
+                </p>
+              )}
             </div>
           </div>
 
-          <button
-            onClick={() => copyPath(DOWNLOAD_FOLDER_PATH, 'banner')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#081C15] hover:bg-[#1B4332] text-[#B9FBC0] border border-[#40916C]/40 text-xs font-semibold shrink-0 cursor-pointer"
-          >
-            {copiedId === 'banner' ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
-            <span>{copiedId === 'banner' ? 'Copied Folder Path!' : 'Copy Folder Path'}</span>
-          </button>
+          {!isEditingPath && (
+            <button
+              onClick={() => copyPath(folderPath, 'banner')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#081C15] hover:bg-[#1B4332] text-[#B9FBC0] border border-[#40916C]/40 text-xs font-semibold shrink-0 cursor-pointer"
+            >
+              {copiedId === 'banner' ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+              <span>{copiedId === 'banner' ? 'Copied Path!' : 'Copy Location Path'}</span>
+            </button>
+          )}
         </div>
 
         {/* Stats Dashboard */}
@@ -505,7 +570,7 @@ export default function FileManagerSection() {
             {filteredFiles.map((file) => {
               const isJson = file.type === 'json';
               const isCsv = file.type === 'csv';
-              const filePathStr = file.filePath || `${DOWNLOAD_FOLDER_PATH}\\${file.name}`;
+              const filePathStr = file.filePath || `${folderPath}\\${file.name}`;
 
               return (
                 <div
@@ -551,7 +616,7 @@ export default function FileManagerSection() {
                       <button
                         onClick={() => copyPath(filePathStr, file.id)}
                         className="p-1 rounded hover:bg-[#1B4332] text-[#74C69D] hover:text-[#B9FBC0] shrink-0 cursor-pointer"
-                        title="Copy File Path"
+                        title="Copy File Location"
                       >
                         {copiedId === file.id ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
                       </button>
@@ -753,16 +818,16 @@ export default function FileManagerSection() {
               </button>
             </div>
 
-            {/* Display File Path on Disk inside Modal */}
+            {/* Display File Path inside Modal */}
             <div className="mb-3 bg-[#081C15] p-3 rounded-xl border border-[#40916C]/30 flex items-center justify-between gap-2">
               <div className="flex items-center gap-2 overflow-hidden">
                 <FolderOpen className="w-4 h-4 text-[#B9FBC0] shrink-0" />
                 <span className="text-xs font-mono text-[#B9FBC0] truncate">
-                  {previewFile.filePath || `${DOWNLOAD_FOLDER_PATH}\\${previewFile.name}`}
+                  {previewFile.filePath || `${folderPath}\\${previewFile.name}`}
                 </span>
               </div>
               <button
-                onClick={() => copyPath(previewFile.filePath || `${DOWNLOAD_FOLDER_PATH}\\${previewFile.name}`, 'modal')}
+                onClick={() => copyPath(previewFile.filePath || `${folderPath}\\${previewFile.name}`, 'modal')}
                 className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#1B4332] text-[#B9FBC0] text-xs font-semibold hover:bg-[#2D6A4F] shrink-0 cursor-pointer"
               >
                 {copiedId === 'modal' ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}

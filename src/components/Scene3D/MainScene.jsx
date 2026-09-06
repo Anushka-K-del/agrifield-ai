@@ -94,8 +94,8 @@ export default function MainScene({ scrollProgress, activeSection, reducedMotion
         droneRotationSpeed={reducedMotion ? 0.2 : 1}
       />
 
-      {/* Section 2, 3, 4: Leaf & Phone Scan Models */}
-      {(activeSection === 1 || activeSection === 2 || activeSection === 3) && (
+      {/* Section 2 & 3: Leaf & Phone Scan Models */}
+      {(activeSection === 1 || activeSection === 2) && (
         <group position={[0, 0, 0]}>
           <LeafModel
             diseaseProgress={problemProgress}
@@ -103,7 +103,7 @@ export default function MainScene({ scrollProgress, activeSection, reducedMotion
             scanActive={activeSection === 2}
           />
           <SmartphoneModel
-            visible={activeSection === 2 || activeSection === 3}
+            visible={activeSection === 2}
             scanActive={activeSection === 2}
           />
         </group>
