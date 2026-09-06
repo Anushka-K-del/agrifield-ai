@@ -5,9 +5,9 @@ export default function HeroSection({ onExplore }) {
   return (
     <section id="hero" className="min-h-screen relative flex flex-col justify-between items-center px-4 sm:px-6 lg:px-8 pt-28 pb-12">
       {/* Top Badge */}
-      <div className="flex items-center gap-2 glass-panel px-4 py-2 rounded-full text-xs font-semibold text-[#B9FBC0] border border-[#B9FBC0]/30 shadow-lg shadow-[#40916C]/20 animate-float">
+      <div className="flex items-center gap-2 glass-panel px-4 py-2 rounded-full text-xs font-semibold text-[#B9FBC0] border border-[#B9FBC0]/40 shadow-lg shadow-[#40916C]/20 animate-float bg-[#081C15]/80">
         <Sparkles className="w-4 h-4 text-[#FFB703]" />
-        <span>Next-Gen Hackathon Project • AI & Edge IoT Ecosystem</span>
+        <span>Smart India Hackathon 2026 • PS ID: SIH26131 • Software Track</span>
       </div>
 
       {/* Hero Headline Content */}
@@ -17,29 +17,40 @@ export default function HeroSection({ onExplore }) {
         </h1>
 
         <p className="text-lg sm:text-2xl font-semibold text-[#D8F3DC] mb-4 tracking-wide max-w-3xl">
-          AI-Driven Smart Agriculture & Crop Health Ecosystem
+          AI-Driven Crop Pathology Scanner & Vernacular Advisory Ecosystem
         </p>
 
         <p className="text-sm sm:text-lg text-[#74C69D]/90 max-w-2xl font-normal leading-relaxed mb-8">
-          Empowering farmers with early crop disease detection, offline computer vision scanning, edge IoT sensing, and vernacular LLM voice intelligence.
+          Empowering Indian smallholders with instant photo-based crop disease diagnosis, MobileNetV3 convolutional neural vision, precision dosage calculations, and multilingual voice advisory in 6 Indian languages.
         </p>
 
         {/* Call-to-Action Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <button
+            onClick={() => {
+              const el = document.getElementById('demo');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="flex items-center gap-2 px-8 py-3.5 rounded-full font-extrabold text-sm bg-gradient-to-r from-[#40916C] via-[#52B788] to-[#B9FBC0] text-[#081C15] shadow-xl shadow-[#40916C]/40 hover:scale-105 transition-all cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4 text-[#081C15]" />
+            <span>Try Live Disease Scan</span>
+          </button>
+
           <button
             onClick={onExplore}
-            className="flex items-center gap-2 px-8 py-3.5 rounded-full font-extrabold text-sm bg-gradient-to-r from-[#40916C] via-[#52B788] to-[#B9FBC0] text-[#081C15] shadow-xl shadow-[#40916C]/30 hover:scale-105 transition-all cursor-pointer"
+            className="flex items-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm bg-[#1B4332] text-[#B9FBC0] border border-[#B9FBC0]/40 hover:bg-[#2D6A4F] hover:text-white transition-all cursor-pointer shadow-lg"
           >
-            <span>Explore 3D Ecosystem</span>
+            <span>Explore 3D Models</span>
             <ArrowRight className="w-4 h-4" />
           </button>
 
           <a
-            href="#solution"
+            href="#how-it-works"
             className="flex items-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm glass-panel text-[#D8F3DC] border border-[#40916C]/40 hover:border-[#B9FBC0]/60 hover:text-white transition-all"
           >
             <Activity className="w-4 h-4 text-[#B9FBC0]" />
-            <span>View Architecture</span>
+            <span>How It Works</span>
           </a>
         </div>
       </div>

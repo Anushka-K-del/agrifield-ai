@@ -4,25 +4,25 @@ import { Cpu, Radio, Volume2, Sparkles } from 'lucide-react';
 export default function SystemPillarsSection() {
   const pillars = [
     {
-      title: '1. Deep Learning Engine',
-      tech: 'MobileNetV3 & TFLite',
+      title: '1. Deep Learning Vision Engine',
+      tech: 'MobileNetV3 & PlantVillage',
       icon: Cpu,
       color: 'text-[#B9FBC0]',
-      desc: 'Optimized neural network trained on over 50,000 crop illness images. Executes quantized inference directly on entry-level Android devices in under 200ms without cell connectivity.',
+      desc: 'Lightweight convolutional neural network trained on 54,000+ crop illness benchmark images. Delivers instant multi-crop pathogen classification in under 200ms without expensive hardware.',
     },
     {
-      title: '2. IoT Edge Gateway',
-      tech: 'ESP32 & LoRaWAN Sensors',
+      title: '2. Precision Treatment & Dosage Matrix',
+      tech: 'Prescription Engine (Phase 1)',
       icon: Radio,
       color: 'text-[#74C69D]',
-      desc: 'Solar-powered field sensor node reading soil NPK levels, moisture, temperature, and leaf humidity. Transmits telemetry via long-range LoRaWAN mesh up to 5km.',
+      desc: 'Calculates exact organic bio-remedies and targeted chemical dilutions (ml/L) based on foliar infection stage, preventing costly fertilizer runoff. (IoT soil sensor probes designated for Phase 2).',
     },
     {
-      title: '3. Vernacular Voice Advisor',
-      tech: 'Multilingual LLM Bot',
+      title: '3. Vernacular Voice Advisory',
+      tech: 'SpeechSynthesis in 6 Languages',
       icon: Volume2,
       color: 'text-[#FFB703]',
-      desc: 'Voice-to-voice AI assistant supporting Hindi, Bengali, Tamil, Telugu, and Marathi. Translates complex agricultural advisory into natural spoken regional dialogue.',
+      desc: "Spoken audio engine supporting Marathi, Hindi, Bengali, Tamil, Telugu, and English. Bridges rural literacy barriers by speaking clear treatment steps in the farmer's native mother tongue.",
     },
   ];
 

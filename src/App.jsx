@@ -3,27 +3,54 @@ import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+import { AuthProvider } from './context/AuthContext';
+import AuthModal from './components/Auth/AuthModal';
+import ScanHistoryModal from './components/ScanHistory/ScanHistoryModal';
+
 import LoadingScreen from './components/LoadingScreen';
 import Navigation from './components/Navigation';
 import CanvasContainer from './components/CanvasContainer';
 
 import HeroSection from './components/Sections/HeroSection';
+import CredentialsHeaderBlock from './components/Sections/CredentialsHeaderBlock';
+import InteractiveDemoSection from './components/Sections/InteractiveDemoSection';
+import HowItWorksSection from './components/Sections/HowItWorksSection';
+import TargetAudienceSection from './components/Sections/TargetAudienceSection';
 import ProblemSection from './components/Sections/ProblemSection';
 import SolutionSection from './components/Sections/SolutionSection';
 import SystemPillarsSection from './components/Sections/SystemPillarsSection';
 import TechStackSection from './components/Sections/TechStackSection';
 import ImpactSection from './components/Sections/ImpactSection';
+import FutureScopeSection from './components/Sections/FutureScopeSection';
+import ResearchReferencesSection from './components/Sections/ResearchReferencesSection';
 import FooterCTASection from './components/Sections/FooterCTASection';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function App() {
+function MainApp() {
   const [loading, setLoading] = useState(true);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [activeSection, setActiveSection] = useState(0);
+  const [activeNavSection, setActiveNavSection] = useState('hero');
+  const [sceneActiveSection, setSceneActiveSection] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
 
   const containerRef = useRef(null);
+
+  const sectionIds = [
+    'hero',
+    'credentials',
+    'demo',
+    'how-it-works',
+    'audience',
+    'problem',
+    'solution',
+    'pillars',
+    'tech',
+    'impact',
+    'future-scope',
+    'references',
+    'cta'
+  ];
 
   // Initialize Lenis Smooth Scroll
   useEffect(() => {
@@ -47,9 +74,22 @@ export default function App() {
         const p = Math.max(0, Math.min(1, window.scrollY / totalScroll));
         setScrollProgress(p);
 
-        // Mapped 7 sections (0 to 6)
-        const currentSec = Math.min(6, Math.floor(p * 7));
-        setActiveSection(currentSec);
+        // 3D Scene mapping (7 states: 0 to 6)
+        const sceneSec = Math.min(6, Math.floor(p * 7));
+        setSceneActiveSection(sceneSec);
+
+        // Detect active navigation section
+        let currentNav = 'hero';
+        for (let i = 0; i < sectionIds.length; i++) {
+          const el = document.getElementById(sectionIds[i]);
+          if (el) {
+            const rect = el.getBoundingClientRect();
+            if (rect.top <= window.innerHeight * 0.4) {
+              currentNav = sectionIds[i];
+            }
+          }
+        }
+        setActiveNavSection(currentNav);
       }
     });
 
@@ -64,9 +104,6 @@ export default function App() {
     };
   }, [loading]);
 
-  // Section IDs array for active section highlighting
-  const sectionIds = ['hero', 'problem', 'solution', 'pillars', 'tech', 'impact', 'cta'];
-
   return (
     <div ref={containerRef} className="relative min-h-screen bg-[#081C15] text-[#D8F3DC] overflow-x-hidden selection:bg-[#40916C] selection:text-white">
       {/* Loading Screen Overlay */}
@@ -76,29 +113,47 @@ export default function App() {
       <Navigation
         reducedMotion={reducedMotion}
         setReducedMotion={setReducedMotion}
-        activeSection={sectionIds[activeSection]}
+        activeSection={activeNavSection}
       />
 
       {/* Fixed Full-Screen 3D Background Canvas */}
       <CanvasContainer
         scrollProgress={scrollProgress}
-        activeSection={activeSection}
+        activeSection={sceneActiveSection}
         reducedMotion={reducedMotion}
       />
+
+      {/* Global Modals */}
+      <AuthModal />
+      <ScanHistoryModal />
 
       {/* Foreground Scrollable Content */}
       <main className="relative z-10">
         <HeroSection onExplore={() => {
-          const el = document.getElementById('problem');
+          const el = document.getElementById('demo');
           if (el) el.scrollIntoView({ behavior: 'smooth' });
         }} />
+        <CredentialsHeaderBlock />
+        <InteractiveDemoSection />
+        <HowItWorksSection />
+        <TargetAudienceSection />
         <ProblemSection />
         <SolutionSection />
         <SystemPillarsSection />
         <TechStackSection />
         <ImpactSection />
+        <FutureScopeSection />
+        <ResearchReferencesSection />
         <FooterCTASection />
       </main>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <MainApp />
+    </AuthProvider>
   );
 }

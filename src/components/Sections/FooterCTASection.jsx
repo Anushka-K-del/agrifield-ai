@@ -15,41 +15,56 @@ export default function FooterCTASection() {
         </h2>
 
         <p className="text-base sm:text-xl text-[#74C69D]/90 max-w-2xl mx-auto mb-8 font-medium">
-          AgriShield AI brings low-cost AI detection, IoT sensing, and multilingual voice advisory directly into the hands of farmers.
+          AgriShield AI brings instant photo-based disease detection, precision dosages, and multilingual voice advisory directly into the hands of rural farmers.
         </p>
 
         {/* CTA Actions */}
         <div className="flex flex-wrap items-center justify-center gap-4 mb-12">
           <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="flex items-center gap-2 px-8 py-3.5 rounded-full font-extrabold text-sm bg-gradient-to-r from-[#40916C] via-[#52B788] to-[#B9FBC0] text-[#081C15] shadow-xl shadow-[#40916C]/30 hover:scale-105 transition-all"
+            onClick={() => {
+              const el = document.getElementById('demo');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="flex items-center gap-2 px-8 py-3.5 rounded-full font-extrabold text-sm bg-gradient-to-r from-[#40916C] via-[#52B788] to-[#B9FBC0] text-[#081C15] shadow-xl shadow-[#40916C]/30 hover:scale-105 transition-all cursor-pointer"
           >
             <Sparkles className="w-4 h-4 text-[#081C15]" />
-            <span>Replay 3D Experience</span>
+            <span>Launch Interactive Demo</span>
           </button>
 
           <a
-            href="mailto:contact@agrishield.ai"
+            href="https://github.com/Slayerxy77/agrifield-ai"
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm glass-panel text-[#D8F3DC] border border-[#40916C]/40 hover:border-[#B9FBC0]/60 hover:text-white transition-all"
           >
-            <Mail className="w-4 h-4 text-[#B9FBC0]" />
-            <span>Contact Team</span>
+            <Code2 className="w-4 h-4 text-[#B9FBC0]" />
+            <span>GitHub Repository</span>
           </a>
         </div>
 
         {/* Hackathon Project Credits Card */}
-        <div className="glass-panel p-6 rounded-2xl border border-[#40916C]/30 max-w-xl w-full text-left">
-          <div className="flex items-center justify-between mb-3 border-b border-[#40916C]/30 pb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#B9FBC0]">
-              Hackathon Project Submission
+        <div className="glass-panel p-6 sm:p-7 rounded-3xl border border-[#B9FBC0]/30 max-w-2xl w-full text-left bg-[#081C15]/80 shadow-2xl">
+          <div className="flex flex-wrap items-center justify-between mb-3 border-b border-[#40916C]/30 pb-3 gap-2">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#B9FBC0] animate-ping" />
+              <span className="text-xs font-extrabold uppercase tracking-wider text-[#B9FBC0]">
+                Smart India Hackathon 2026 Submission
+              </span>
+            </div>
+            <span className="text-xs font-mono font-bold text-[#FFB703] bg-[#1B4332] px-2.5 py-0.5 rounded-full">
+              PS ID: SIH26131
             </span>
-            <span className="text-[10px] font-mono text-[#74C69D]">v1.0.0</span>
           </div>
 
-          <div className="text-xs text-[#D8F3DC]/80 space-y-1.5">
-            <p><strong className="text-white">Project:</strong> AgriShield AI Ecosystem</p>
-            <p><strong className="text-white">Built For:</strong> Smart Agriculture & Rural Impact</p>
-            <p><strong className="text-white">Tech:</strong> React + React Three Fiber + GSAP + Lenis + Tailwind CSS</p>
+          <div className="text-xs text-[#D8F3DC]/90 space-y-2">
+            <p><strong className="text-white">Problem Statement:</strong> Early detection and management of crop diseases and pest infestations</p>
+            <p><strong className="text-white">Track:</strong> Software Track Only (Zero Mandatory Hardware Dependency)</p>
+            <p><strong className="text-white">Theme:</strong> Agriculture, FoodTech & Rural Development</p>
+            <p><strong className="text-white">Sponsoring Organization:</strong> Government of Maharashtra</p>
+            <div className="pt-2 border-t border-[#40916C]/20 flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#74C69D]">
+              <span><strong>Team:</strong> Team AgriShield Innovators</span>
+              <span><strong>Deployment:</strong> Vercel Global Edge CDN</span>
+            </div>
           </div>
         </div>
       </div>
@@ -59,11 +74,11 @@ export default function FooterCTASection() {
         <div className="flex items-center gap-1.5">
           <span>Crafted with</span>
           <Heart className="w-3.5 h-3.5 text-red-400 fill-current" />
-          <span>for Agriculture & Farmers</span>
+          <span>for Maharashtra & Indian Agriculture</span>
         </div>
 
         <div>
-          © 2026 AgriShield AI. All rights reserved.
+          © 2026 AgriShield AI • Smart India Hackathon Finalist
         </div>
       </div>
     </footer>

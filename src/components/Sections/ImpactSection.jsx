@@ -1,6 +1,45 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Award, ShieldCheck, MapPin, Calculator, CloudSun, DollarSign } from 'lucide-react';
 
+function CountUpNumber({ target, unit, inView, prefix = '' }) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    let start = 0;
+    const end = target;
+    const duration = 1400; // ms
+    const stepTime = 25;
+    const totalSteps = duration / stepTime;
+    const increment = end / totalSteps;
+
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= end) {
+        setCount(end);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, stepTime);
+
+    return () => clearInterval(timer);
+  }, [inView, target]);
+
+  return (
+    <span>
+      {prefix}{count}{unit}
+    </span>
+  );
+}
+
+const impactStats = [
+  { target: 25, unit: '%', label: 'Yield Improvement', detail: 'Harvest loss prevented via Day-1 pathology detection' },
+  { target: 30, unit: '%', label: 'Cost Reduction', detail: 'Via precision calculated organic & chemical dosages' },
+  { target: 6, unit: '', label: 'Regional Languages', detail: 'Native vernacular voice in Marathi, Hindi, Tamil & more' },
+  { target: 3, unit: 's', prefix: '<', label: 'Diagnosis Speed', detail: 'Sub-3-second instant computer vision inference' },
+];
+
 export default function ImpactSection() {
   const [inView, setInView] = useState(false);
   const sectionRef = useRef();
@@ -12,7 +51,7 @@ export default function ImpactSection() {
           setInView(true);
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.25 }
     );
 
     if (sectionRef.current) {
@@ -67,16 +106,15 @@ export default function ImpactSection() {
 
         {/* 4 Animated Impact Stats Counter Badges */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-14">
-          {[
-            { target: 30, unit: '%', label: 'Cost Reduction', detail: 'Fewer wasted pesticides' },
-            { target: 25, unit: '%', label: 'Yield Improvement', detail: 'Harvest loss prevented' },
-            { target: 50, unit: 'K+', label: 'Training Images', detail: 'Annotated crop leaves' },
-            { target: 200, unit: 'ms', label: 'Inference Speed', detail: 'Instant mobile diagnosis' },
-          ].map((stat, idx) => (
-            <div key={idx} className="glass-panel p-6 rounded-2xl border border-[#40916C]/40 text-center">
+          {impactStats.map((stat, idx) => (
+            <div key={idx} className="glass-panel p-6 rounded-2xl border border-[#40916C]/40 text-center bg-[#081C15]/80">
               <div className="text-3xl sm:text-4xl font-extrabold font-mono text-[#B9FBC0] mb-1">
-                {inView ? stat.target : 0}
-                {stat.unit}
+                <CountUpNumber
+                  target={stat.target}
+                  unit={stat.unit}
+                  inView={inView}
+                  prefix={stat.prefix}
+                />
               </div>
               <div className="text-xs font-bold text-white mb-1">{stat.label}</div>
               <div className="text-[10px] text-[#74C69D]/80">{stat.detail}</div>

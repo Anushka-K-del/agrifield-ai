@@ -3,9 +3,9 @@ import { Shield, Smartphone, WifiOff, Mic, CheckCircle2, Zap } from 'lucide-reac
 
 export default function SolutionSection() {
   const chips = [
-    { title: 'Instant Disease Detection', detail: '>95% Accuracy', icon: Zap, color: 'border-[#B9FBC0] text-[#B9FBC0]' },
-    { title: 'Edge Micro-Climate Sensing', detail: 'Real-Time LoRaWAN', icon: Smartphone, color: 'border-[#74C69D] text-[#74C69D]' },
-    { title: 'Vernacular Voice Assistant', detail: '5+ Indian Languages', icon: Mic, color: 'border-[#FFB703] text-[#FFB703]' },
+    { title: 'Instant Neural Detection', detail: '>95% PlantVillage Acc', icon: Zap, color: 'border-[#B9FBC0] text-[#B9FBC0]' },
+    { title: 'Precision Dosage Engine', detail: 'Organic & Chemical Formulations', icon: Smartphone, color: 'border-[#74C69D] text-[#74C69D]' },
+    { title: 'Vernacular Voice Advisory', detail: '6 Indian Languages Supported', icon: Mic, color: 'border-[#FFB703] text-[#FFB703]' },
   ];
 
   return (
@@ -19,10 +19,10 @@ export default function SolutionSection() {
           </div>
           <h2 className="text-3xl sm:text-5xl font-extrabold text-white mb-4 tracking-tight">
             Mobile-First Edge Intelligence <br />
-            <span className="text-[#B9FBC0]">Real-Time Crop Scan Engine</span>
+            <span className="text-[#B9FBC0]">Real-Time Crop Pathology Engine</span>
           </h2>
           <p className="text-base sm:text-lg text-[#74C69D]/90 max-w-2xl mx-auto">
-            A localized, mobile-first ecosystem combining ultra-low-cost IoT edge sensing with computer vision for immediate, offline actionable advice.
+            A software-first ecosystem uniting convolutional computer vision, precision dosage calculations, and vernacular audio guidance for immediate, accessible farmer empowerment.
           </p>
         </div>
 
@@ -33,7 +33,7 @@ export default function SolutionSection() {
             return (
               <div
                 key={idx}
-                className="glass-panel p-6 rounded-2xl border border-[#40916C]/40 flex items-center gap-4 hover:border-[#B9FBC0] transition-all"
+                className="glass-panel p-6 rounded-2xl border border-[#40916C]/40 flex items-center gap-4 hover:border-[#B9FBC0] transition-all bg-[#081C15]/80"
               >
                 <div className="p-3 rounded-xl bg-[#081C15] border border-[#40916C]/40">
                   <Icon className="w-6 h-6 text-[#B9FBC0]" />
@@ -50,12 +50,12 @@ export default function SolutionSection() {
         </div>
 
         {/* Key Offline & Edge Capabilities */}
-        <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-[#B9FBC0]/20 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-[#B9FBC0]/20 grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#081C15]/80">
           {[
-            'Offline-First AI: Runs MobileNetV3 directly on phone without internet connection',
-            'Laser Sweep Scan: Highlights diseased leaves and pinpoints exact pathogen type',
-            'Localized Remedy Advice: Custom organic & chemical dosage calculations',
-            'Vernacular LLM Voice Bot: Conversational voice support in Hindi, Tamil, Telugu & Marathi',
+            'Lightweight AI Architecture: MobileNetV3 CNN designed for instant mobile inference',
+            'Laser Sweep Scan: Isolates foliar regions and pinpoints specific fungal & bacterial pathogens',
+            'Localized Remedy Advisory: Custom organic bio-controls & chemical milliliter dosages',
+            'Vernacular Voice Engine: Spoken audio support in Marathi, Hindi, Tamil, Telugu, Bengali & English',
           ].map((item, idx) => (
             <div key={idx} className="flex items-start gap-3">
               <CheckCircle2 className="w-5 h-5 text-[#B9FBC0] shrink-0 mt-0.5" />
