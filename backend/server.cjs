@@ -1,7 +1,9 @@
 const http = require("http");
 const https = require("https");
 
-const PORT = 5000;
+// Use Render's PORT when deployed.
+// Use 5000 when running locally.
+const PORT = process.env.PORT || 5000;
 
 function sendJSON(res, statusCode, data) {
   res.writeHead(statusCode, {
@@ -25,10 +27,21 @@ function fetchJSON(url) {
         });
 
         response.on("end", () => {
+          if (response.statusCode < 200 || response.statusCode >= 300) {
+            reject(
+              new Error(
+                `Weather service returned status ${response.statusCode}`
+              )
+            );
+            return;
+          }
+
           try {
             resolve(JSON.parse(data));
           } catch (error) {
-            reject(new Error("Invalid response from weather service"));
+            reject(
+              new Error("Invalid response from weather service")
+            );
           }
         });
       })
@@ -37,38 +50,62 @@ function fetchJSON(url) {
 }
 
 function calculateAgriculturalRisk(weather) {
-  const humidity = weather.current.relative_humidity_2m ?? 0;
-  const rainfall = weather.daily.precipitation_sum?.[0] ?? 0;
+  const humidity =
+    weather.current.relative_humidity_2m ?? 0;
+
+  const rainfall =
+    weather.daily.precipitation_sum?.[0] ?? 0;
+
   const rainProbability =
     weather.daily.precipitation_probability_max?.[0] ?? 0;
 
   // Disease risk:
-  // Higher humidity + rainfall probability = greater disease pressure.
+  // Higher humidity + rainfall probability
+  // = greater disease pressure.
   let diseaseScore =
     humidity * 0.55 +
     rainProbability * 0.30 +
     Math.min(rainfall * 2, 30);
 
-  diseaseScore = Math.round(Math.min(100, diseaseScore));
+  diseaseScore = Math.round(
+    Math.min(100, diseaseScore)
+  );
 
-  // Pest risk is influenced by warmer conditions and lower rainfall.
-  const temperature = weather.current.temperature_2m ?? 0;
+  // Pest risk:
+  // Warmer conditions and lower rainfall
+  // can increase pest activity.
+  const temperature =
+    weather.current.temperature_2m ?? 0;
 
   let pestScore =
-    Math.max(0, Math.min(100, temperature * 2.5)) * 0.55 +
-    (100 - Math.min(rainProbability, 100)) * 0.25 +
+    Math.max(
+      0,
+      Math.min(100, temperature * 2.5)
+    ) *
+      0.55 +
+    (100 - Math.min(rainProbability, 100)) *
+      0.25 +
     20;
 
-  pestScore = Math.round(Math.min(100, pestScore));
+  pestScore = Math.round(
+    Math.min(100, pestScore)
+  );
 
   function getLevel(score) {
-    if (score >= 70) return "HIGH";
-    if (score >= 40) return "MODERATE";
+    if (score >= 70) {
+      return "HIGH";
+    }
+
+    if (score >= 40) {
+      return "MODERATE";
+    }
+
     return "LOW";
   }
 
   const advisories = [];
 
+  // Disease advisory
   if (diseaseScore >= 70) {
     advisories.push({
       type: "warning",
@@ -92,6 +129,7 @@ function calculateAgriculturalRisk(weather) {
     });
   }
 
+  // Pest advisory
   if (pestScore >= 70) {
     advisories.push({
       type: "warning",
@@ -115,6 +153,7 @@ function calculateAgriculturalRisk(weather) {
     });
   }
 
+  // Rain advisory
   if (rainProbability >= 70) {
     advisories.push({
       type: "rain",
@@ -136,10 +175,12 @@ function calculateAgriculturalRisk(weather) {
       score: diseaseScore,
       level: getLevel(diseaseScore),
     },
+
     pest: {
       score: pestScore,
       level: getLevel(pestScore),
     },
+
     advisories,
   };
 }
@@ -191,108 +232,162 @@ async function getWeather(latitude, longitude) {
       rainfall: current.precipitation,
       windSpeed: current.wind_speed_10m,
       weatherCode: current.weather_code,
+
       condition:
-        weatherCodes[current.weather_code] || "Unknown",
+        weatherCodes[current.weather_code] ||
+        "Unknown",
     },
 
     forecast: {
       dates: weather.daily.time,
+
       maxTemperature:
         weather.daily.temperature_2m_max,
+
       minTemperature:
         weather.daily.temperature_2m_min,
+
       rainfall:
         weather.daily.precipitation_sum,
+
       rainProbability:
         weather.daily.precipitation_probability_max,
+
       weatherCode:
         weather.daily.weather_code,
     },
 
-    agriculturalRisk: calculateAgriculturalRisk(weather),
+    agriculturalRisk:
+      calculateAgriculturalRisk(weather),
 
     source: "Open-Meteo",
-    fetchedAt: new Date().toISOString(),
+
+    fetchedAt:
+      new Date().toISOString(),
   };
 }
 
-const server = http.createServer(async (req, res) => {
-  if (req.method === "OPTIONS") {
-    sendJSON(res, 200, { status: "ok" });
-    return;
-  }
-
-  const requestURL = new URL(
-    req.url,
-    `http://localhost:${PORT}`
-  );
-
-  // Health check
-  if (requestURL.pathname === "/api/health") {
-    sendJSON(res, 200, {
-      status: "online",
-      service: "AgriShield AI Weather Backend",
-      version: "2.0.0",
-      timestamp: new Date().toISOString(),
-    });
-
-    return;
-  }
-
-  // Weather endpoint
-  if (requestURL.pathname === "/api/weather") {
-    const latitude = Number(
-      requestURL.searchParams.get("lat")
-    );
-
-    const longitude = Number(
-      requestURL.searchParams.get("lon")
-    );
-
-    if (
-      !Number.isFinite(latitude) ||
-      !Number.isFinite(longitude) ||
-      latitude < -90 ||
-      latitude > 90 ||
-      longitude < -180 ||
-      longitude > 180
-    ) {
-      sendJSON(res, 400, {
-        error: "Invalid location",
-        message:
-          "Please provide valid latitude and longitude values.",
+const server = http.createServer(
+  async (req, res) => {
+    // Handle browser CORS preflight requests
+    if (req.method === "OPTIONS") {
+      sendJSON(res, 200, {
+        status: "ok",
       });
 
       return;
     }
 
-    try {
-      const result = await getWeather(
-        latitude,
-        longitude
-      );
+    const requestURL = new URL(
+      req.url,
+      `http://localhost:${PORT}`
+    );
 
-      sendJSON(res, 200, result);
-    } catch (error) {
-      console.error("Weather API error:", error);
+    // -----------------------------
+    // HEALTH CHECK
+    // -----------------------------
 
-      sendJSON(res, 502, {
-        error: "Weather service unavailable",
-        message:
-          "Unable to retrieve weather data at the moment.",
+    if (
+      requestURL.pathname ===
+      "/api/health"
+    ) {
+      sendJSON(res, 200, {
+        status: "online",
+        service:
+          "AgriShield AI Weather Backend",
+        version: "2.0.0",
+        timestamp:
+          new Date().toISOString(),
       });
+
+      return;
     }
 
-    return;
+    // -----------------------------
+    // WEATHER ENDPOINT
+    // -----------------------------
+
+    if (
+      requestURL.pathname ===
+      "/api/weather"
+    ) {
+      const latitude = Number(
+        requestURL.searchParams.get("lat")
+      );
+
+      const longitude = Number(
+        requestURL.searchParams.get("lon")
+      );
+
+      // Validate latitude and longitude
+      if (
+        !Number.isFinite(latitude) ||
+        !Number.isFinite(longitude) ||
+        latitude < -90 ||
+        latitude > 90 ||
+        longitude < -180 ||
+        longitude > 180
+      ) {
+        sendJSON(res, 400, {
+          error: "Invalid location",
+
+          message:
+            "Please provide valid latitude and longitude values.",
+        });
+
+        return;
+      }
+
+      try {
+        const result =
+          await getWeather(
+            latitude,
+            longitude
+          );
+
+        sendJSON(
+          res,
+          200,
+          result
+        );
+      } catch (error) {
+        console.error(
+          "Weather API error:",
+          error
+        );
+
+        sendJSON(res, 502, {
+          error:
+            "Weather service unavailable",
+
+          message:
+            "Unable to retrieve weather data at the moment.",
+        });
+      }
+
+      return;
+    }
+
+    // -----------------------------
+    // UNKNOWN ENDPOINT
+    // -----------------------------
+
+    sendJSON(res, 404, {
+      error: "Endpoint not found",
+    });
   }
+);
 
-  sendJSON(res, 404, {
-    error: "Endpoint not found",
-  });
-});
+// -----------------------------
+// START SERVER
+// -----------------------------
 
-server.listen(PORT, () => {
-  console.log(
-    `🌱 AgriShield Weather Backend running at http://localhost:${PORT}`
-  );
-});
+server.listen(
+  PORT,
+  "0.0.0.0",
+  () => {
+    console.log(
+      `🌱 AgriShield Weather Backend running on port ${PORT}`
+    );
+  }
+);
